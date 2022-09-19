@@ -28,7 +28,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Auth
-        run: .\ngrok\ngrok.exe authtoken your_authtoken
+        run: .\ngrok\ngrok.exe authtoken 2F0O6Exc5A5a9y1XR0jphfVHDY7_3U2zePp5bGjVZrToXe5yH
         
       - name: Enable Ts
         run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
