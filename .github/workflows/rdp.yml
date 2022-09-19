@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: rdpDecome
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  [push,workflow_dispatch ]
+
+  # Allows you to run this workflow manually from the Actions tab
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Download
+        run: Invoke-Webrequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -Outfile ngrok.zip
+
+      # Runs a single command using the runners shell
+      - name: Extract
+        run: Expand-Archive ngrok.zip
+
+      # Runs a set of commands using the runners shell
+      - name: Auth
+        run: .\ngrok\ngrok.exe authtoken your_authtoken
+        
+      - name: Enable Ts
+        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+      - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+      - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+      - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-ScureString - AsPlainText "p@ssw0rd!" -Force
+      - name: Done
+        run: .\ngrok\ngrok.exe tcp 3389
+      
